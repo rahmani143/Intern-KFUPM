@@ -1,3 +1,94 @@
+# Absolutely! Here’s a **sample README.md** file you can upload to your project folder. It’s based on your requirements and script details.
+
+# ---
+
+# # FLIR Camera Image Acquisition
+
+# **Welcome to the FLIR Camera Image Acquisition Project!**
+
+# This script is designed to capture images from a FLIR camera using the PySpin library and FLIR Spinnaker SDK.
+
+# ---
+
+# ## 📌 Important Notes
+
+# - **Storage Location:**  
+#   Images are saved to:  
+#   ```
+#   C:\Users\bss10\OneDrive\Desktop\camera_env\aquired_images
+#   ```
+# - **Environment:**  
+#   Due to storage issues with uploaded files, you must run this script in an environment with the required libraries installed (see below).
+# - **Parent Files:**  
+#   These files are taken from a parent project and are intended for use in environments where the FLIR SDK and required Python libraries are available.
+
+# ---
+
+# ## 🛠️ Requirements
+
+# - **Python** (tested with Python 3.7+)
+# - **PySpin** (FLIR's Python SDK interface, included with the FLIR Spinnaker SDK)
+# - **FLIR Spinnaker SDK** (must be installed manually from [FLIR’s official site](https://www.flir.com/support-center/iis/machine-vision/))
+# - **os** (built-in Python library)
+
+# ---
+
+# ## 🚀 How to Use
+
+# 1. **Install Dependencies:**
+#    - Download and install the [FLIR Spinnaker SDK](https://www.flir.com/support-center/iis/machine-vision/).
+#    - Install the PySpin wrapper:
+#      ```bash
+#      pip install pyspin
+#      ```
+#    - (Note: On some systems, PySpin may be included with the SDK and not available via pip. In that case, use the SDK's provided PySpin.)
+
+# 2. **Prepare the Environment:**
+#    - Ensure your FLIR camera is connected and recognized by the system.
+#    - Make sure the output directory exists:
+#      ```python
+#      SAVE_DIR = r"C:\Users\bss10\OneDrive\Desktop\camera_env\aquired_images"
+#      ```
+
+# 3. **Run the Script:**
+#    ```bash
+#    python flir_test.py
+#    ```
+
+# 4. **Check Output:**
+#    - Captured images will be saved in the specified directory.
+#    - Each image is named as `Acquisition-{SerialNumber}-{Index}.jpg` (or `Acquisition-{Index}.jpg` if no serial number is found).
+
+# ---
+
+# ## ❓ Troubleshooting
+
+# - **No cameras detected:**  
+#   - Verify the FLIR SDK installation.
+#   - Ensure the camera is properly connected and powered on.
+#   - Check that no other applications are accessing the camera.
+# - **Permission issues:**  
+#   - Make sure the output directory is writable.
+# - **Missing dependencies:**  
+#   - Confirm that the FLIR Spinnaker SDK and PySpin are installed correctly.
+
+# ---
+
+# ## 📜 License
+
+# This project is intended for internal use. Please refer to FLIR’s licensing terms for the Spinnaker SDK.
+
+# ---
+
+# **Happy imaging!** 📷✨
+
+# ---
+
+
+
+
+
+
 import os
 import PySpin.PySpin
 
