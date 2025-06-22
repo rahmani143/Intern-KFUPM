@@ -1,0 +1,149 @@
+Tabletop HSI Machine Project – README
+Overview
+This project details the design, assembly, software development, and calibration of a tabletop Hyperspectral Imaging (HSI) machine. The system is intended for laboratory-scale imaging, enabling the capture and analysis of spectral data across a range of wavelengths for scientific and industrial applications.
+
+Table of Contents
+1.Introduction
+2.System Components
+3.Assembly Instructions
+4.Electronics & Control
+5.Software Overview
+6.Calibration Procedures
+7.Data Acquisition & Processing
+8.Testing & Validation
+9.Documentation & Reporting
+10.Troubleshooting & Tips
+11.Contact
+
+1. Introduction
+The Tabletop HSI Machine is a modular, customizable platform for hyperspectral imaging. It is designed to facilitate research and development in fields such as material analysis, agriculture, and biomedical imaging. This README provides a comprehensive guide to building, operating, and maintaining the system.
+
+2. System Components
+    2.a Hardware
+        Optical Components: Lenses, mirrors, and filters for directing and conditioning light.
+
+        Light Source: Uniform illumination for consistent imaging.
+
+        Spectrometer: Captures spectral information from the sample.
+
+        Camera: Records spatial and spectral data.
+
+        Motorized Stage (optional): Enables automated scanning of samples.
+
+    2.b Electronics
+        Microcontroller or PC Interface: Controls hardware and communicates with the software.
+
+        Power Supply: Provides stable power to all components.
+
+3. Assembly Instructions
+    3.a Mechanical Assembly
+
+        Mount the optical components on the base platform, ensuring precise alignment.
+
+        Secure the light source to provide even illumination across the sample area.
+
+        Install the spectrometer and camera, aligning them with the optical path.
+
+        If using a motorized stage, assemble and test its movement.
+
+    3.b Wiring & Connections
+
+        Connect the camera, spectrometer, and motorized stage (if present) to the microcontroller or PC.
+
+        Ensure all power connections are secure and compliant with voltage requirements.
+
+4. Electronics & Control
+    Set up the microcontroller or connect the system directly to a PC via USB or other interfaces.
+
+    Load or install the necessary drivers for camera and spectrometer operation.
+
+    Test basic connectivity and functionality before proceeding to full system integration.
+
+5. Software Overview
+    5.a Data Acquisition
+
+        The software controls image capture, hardware synchronization, and data storage.
+
+        User interface allows for manual or automated image acquisition.
+
+    5.b Image Processing Pipeline
+
+        Preprocessing: Straightens slanted images and corrects for rotation.
+
+        Edge Detection: Uses Canny algorithm to identify features and lines in calibration images.
+
+        Line Detection: Python scripts with OpenCV detect vertical lines; duplicates and weak edges are filtered out.
+
+        Spatial Calibration: Calculates pixel distances between lines and converts to real-world units.
+
+    5.c User Interface
+
+        Provides controls for starting scans, adjusting parameters, and saving images.
+
+        Messaging features confirm successful image saving and other actions.
+
+6. Calibration Procedures
+
+    6.a Spatial Calibration
+
+        Capture calibration images using the hyperspectral sensor.
+
+        Apply edge and line detection to identify reference features.
+
+        Calculate pixel-to-distance conversion using known calibration targets.
+
+    6.b Rotation Correction
+
+        Use code snippets to correct image rotation and ensure consistent alignment.
+
+        Verify that vertical lines are accurately detected after correction.
+
+    6.c Spectral & Radiometric Calibration
+
+        Capture dark current, white reference, and sample images under identical conditions.
+
+        Apply calibration formulas to convert raw data to reflectance or radiance.
+
+7. Data Acquisition & Processing
+    Acquire hyperspectral images of samples using the user interface.
+
+    Preprocess images for alignment and quality.
+
+    Visualize data using 2D and 3D plots of pixel intensity and spatial distribution.
+
+    Analyze results for scientific or industrial insights.
+
+8. Testing & Validation
+    Perform initial system calibration and alignment.
+
+    Run test scans to check image quality and spectral accuracy.
+
+    Validate results using known standards or reference samples.
+
+    Document calibration constants and procedures for reproducibility.
+
+9. Documentation & Reporting
+    Maintain a build log with assembly steps and any modifications.
+
+    Write a user manual for system operation and data analysis.
+
+    Record all calibration data, test results, and troubleshooting steps.
+
+10. Troubleshooting & Tips
+    Use calibration targets (white reference, spectral standards) for accuracy.
+
+    Regularly back up software, data, and documentation.
+
+    Have another user test the system and manual for clarity.
+
+    Optimize edge detection and line detection parameters for your specific setup.
+
+    For code issues in spatial calibration (e.g., for NIR filters), review Python/OpenCV scripts and confirm calibration targets are well-defined.
+
+11. Contact
+    For questions, support, or contributions, contact the project maintainer or open an issue in the project repository.
+
+    This README provides a comprehensive guide to assembling, calibrating, and operating the Tabletop HSI Machine.
+    or contact me at 
+    mail : bss10i19ibrahimazeem@gmail.com
+    linkedin : [https://www.linkedin.com/in/ibrahim-azeem/](https://www.linkedin.com/in/ibrahim-azeem/)
