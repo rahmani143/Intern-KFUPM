@@ -1,88 +1,110 @@
-# Absolutely! Here’s a **sample README.md** file you can upload to your project folder. It’s based on your requirements and script details.
+# import os
+# import PySpin
+# import PySpin.PySpin
 
-# ---
 
-# # FLIR Camera Image Acquisition
 
-# **Welcome to the FLIR Camera Image Acquisition Project!**
+# NUM_IMAGES = 10  # Number of images to acquire
+# SAVE_DIR = r"C:\\Users\bss10\\OneDrive\Desktop\\camera_env\\aquired_images"
 
-# This script is designed to capture images from a FLIR camera using the PySpin library and FLIR Spinnaker SDK.
+# print(os.makedirs(SAVE_DIR, exist_ok=True))
 
-# ---
+# def acquire_images(cam, nodemap, nodemap_tldevice):
+#     print('*** IMAGE ACQUISITION ***\n')
+#     try:
+#         result = True
 
-# ## 📌 Important Notes
+#         # Ensure save directory exists
+#         if not os.path.exists(SAVE_DIR):
+#             os.makedirs(SAVE_DIR)
 
-# - **Storage Location:**  
-#   Images are saved to:  
-#   ```
-#   C:\Users\bss10\OneDrive\Desktop\camera_env\aquired_images
-#   ```
-# - **Environment:**  
-#   Due to storage issues with uploaded files, you must run this script in an environment with the required libraries installed (see below).
-# - **Parent Files:**  
-#   These files are taken from a parent project and are intended for use in environments where the FLIR SDK and required Python libraries are available.
+#         # Set acquisition mode to continuous
+#         node_acquisition_mode = PySpin.PySpin.CEnumerationPtr(nodemap.GetNode('AcquisitionMode'))
+#         if not PySpin.PySpin.IsReadable(node_acquisition_mode) or not PySpin.PySpin.IsWritable(node_acquisition_mode):
+#             print('Unable to set acquisition mode to continuous (enum retrieval). Aborting...')
+#             return False
 
-# ---
+#         node_acquisition_mode_continuous = node_acquisition_mode.GetEntryByName('Continuous')
+#         if not PySpin.PySpin.IsReadable(node_acquisition_mode_continuous):
+#             print('Unable to set acquisition mode to continuous (entry retrieval). Aborting...')
+#             return False
 
-# ## 🛠️ Requirements
+#         acquisition_mode_continuous = node_acquisition_mode_continuous.GetValue()
+#         node_acquisition_mode.SetIntValue(acquisition_mode_continuous)
+#         print('Acquisition mode set to continuous...')
 
-# - **Python** (tested with Python 3.7+)
-# - **PySpin** (FLIR's Python SDK interface, included with the FLIR Spinnaker SDK)
-# - **FLIR Spinnaker SDK** (must be installed manually from [FLIR’s official site](https://www.flir.com/support-center/iis/machine-vision/))
-# - **os** (built-in Python library)
+#         cam.BeginAcquisition()
+#         print('Acquiring images...')
 
-# ---
+#         device_serial_number = ''
+#         node_device_serial_number = PySpin.PySpin.CStringPtr(nodemap_tldevice.GetNode('DeviceSerialNumber'))
+#         if PySpin.PySpin.IsReadable(node_device_serial_number):
+#             device_serial_number = node_device_serial_number.GetValue()
+#             print('Device serial number retrieved as %s...' % device_serial_number)
 
-# ## 🚀 How to Use
+#         processor = PySpin.PySpin.ImageProcessor()
+#         processor.SetColorProcessing(PySpin.PySpin.SPINNAKER_COLOR_PROCESSING_ALGORITHM_HQ_LINEAR)
 
-# 1. **Install Dependencies:**
-#    - Download and install the [FLIR Spinnaker SDK](https://www.flir.com/support-center/iis/machine-vision/).
-#    - Install the PySpin wrapper:
-#      ```bash
-#      pip install pyspin
-#      ```
-#    - (Note: On some systems, PySpin may be included with the SDK and not available via pip. In that case, use the SDK's provided PySpin.)
+#         for i in range(NUM_IMAGES):
+#             try:
+#                 image_result = cam.GetNextImage(1000)
+#                 if image_result.IsIncomplete():
+#                     print('Image incomplete with image status %d ...' % image_result.GetImageStatus())
+#                 else:
+#                     width = image_result.GetWidth()
+#                     height = image_result.GetHeight()
+#                     print('Grabbed Image %d, width = %d, height = %d' % (i, width, height))
 
-# 2. **Prepare the Environment:**
-#    - Ensure your FLIR camera is connected and recognized by the system.
-#    - Make sure the output directory exists:
-#      ```python
-#      SAVE_DIR = r"C:\Users\bss10\OneDrive\Desktop\camera_env\aquired_images"
-#      ```
+#                     image_converted = processor.Convert(image_result, PySpin.PixelFormat_Mono8)
 
-# 3. **Run the Script:**
-#    ```bash
-#    python flir_test.py
-#    ```
+#                     # Create a unique filename in the desired directory
+#                     if device_serial_number:
+#                         filename = os.path.join(SAVE_DIR, f'Acquisition-{device_serial_number}-{i}.jpg')
+#                     else:
+#                         filename = os.path.join(SAVE_DIR, f'Acquisition-{i}.jpg')
 
-# 4. **Check Output:**
-#    - Captured images will be saved in the specified directory.
-#    - Each image is named as `Acquisition-{SerialNumber}-{Index}.jpg` (or `Acquisition-{Index}.jpg` if no serial number is found).
+#                     image_converted.Save(filename)
+#                     print(f'Image saved at {filename}')
 
-# ---
+#                     image_result.Release()
+#                     print('')
 
-# ## ❓ Troubleshooting
+#             except PySpin.PySpin.SpinnakerException as ex:
+#                 print('Error: %s' % ex)
+#                 return False
 
-# - **No cameras detected:**  
-#   - Verify the FLIR SDK installation.
-#   - Ensure the camera is properly connected and powered on.
-#   - Check that no other applications are accessing the camera.
-# - **Permission issues:**  
-#   - Make sure the output directory is writable.
-# - **Missing dependencies:**  
-#   - Confirm that the FLIR Spinnaker SDK and PySpin are installed correctly.
+#         cam.EndAcquisition()
 
-# ---
+#     except PySpin.PySpin.SpinnakerException as ex:
+#         print('Error: %s' % ex)
+#         return False
 
-# ## 📜 License
+#     return result
 
-# This project is intended for internal use. Please refer to FLIR’s licensing terms for the Spinnaker SDK.
+# if __name__ == "__main__":
+#     # Initialize system and camera
+#     system = PySpin.PySpin.System.GetInstance()
+#     print("system found")
+#     cam_list = system.GetCameras()
+#     if cam_list.GetSize() == 0:
+#         print("No cameras detected.")
+#         system.ReleaseInstance()
+#         exit()
 
-# ---
+#     cam = cam_list.GetByIndex(0)
+#     cam.Init()
+#     nodemap = cam.GetNodeMap()
+#     nodemap_tldevice = cam.GetTLDeviceNodeMap()
 
-# **Happy imaging!** 📷✨
+#     # Call your acquire_images function
+#     acquire_images(cam, nodemap, nodemap_tldevice)
 
-# ---
+#     # Cleanup
+#     cam.DeInit()
+#     del cam
+#     cam_list.Clear()
+#     system.ReleaseInstance()
+
 
 
 
@@ -90,26 +112,21 @@
 
 
 import os
-import PySpin.PySpin
+import PySpin
 
-NUM_IMAGES = 400
-SAVE_DIR = r"C:\Users\bss10\OneDrive\Desktop\camera_env\aquired_images"
+NUM_IMAGES = 10
+SAVE_DIR = r"C:\\Users\\bss10\\OneDrive\\Desktop\\camera_env\\aquired_images"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
 def acquire_images(cam, nodemap, nodemap_tldevice):
     print('*** IMAGE ACQUISITION ***\n')
     try:
-        # Set pixel format to Mono8 (if supported)
+        # Set pixel format to Mono8
         node_pixel_format = PySpin.PySpin.CEnumerationPtr(nodemap.GetNode('PixelFormat'))
-        if PySpin.PySpin.IsAvailable(node_pixel_format) and PySpin.PySpin.IsWritable(node_pixel_format):
-            node_pixel_format_mono8 = node_pixel_format.GetEntryByName('Mono8')
-            if PySpin.PySpin.IsAvailable(node_pixel_format_mono8) and PySpin.PySpin.IsReadable(node_pixel_format_mono8):
-                pixel_format_mono8 = node_pixel_format_mono8.GetValue()
-                node_pixel_format.SetIntValue(pixel_format_mono8)
-                print("Pixel format set to Mono8.")
-            else:
-                print("Mono8 pixel format not available.")
-                return False
+        node_pixel_format_mono8 = node_pixel_format.GetEntryByName('Mono8')
+        pixel_format_mono8 = node_pixel_format_mono8.GetValue()
+        node_pixel_format.SetIntValue(pixel_format_mono8)
+        print("Camera pixel format set to Mono8.")
 
         # Set acquisition mode to continuous
         node_acquisition_mode = PySpin.PySpin.CEnumerationPtr(nodemap.GetNode('AcquisitionMode'))
@@ -127,41 +144,43 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
             device_serial_number = node_device_serial_number.GetValue()
             print('Device serial number retrieved as %s...' % device_serial_number)
 
+        processor = PySpin.PySpin.ImageProcessor()
+        processor.SetColorProcessing(PySpin.PySpin.SPINNAKER_COLOR_PROCESSING_ALGORITHM_HQ_LINEAR)
+
         for i in range(NUM_IMAGES):
-            image_result = cam.GetNextImage(1000)
-            if image_result.IsIncomplete():
-                print('Image incomplete with image status %d ...' % image_result.GetImageStatus())
-            else:
-                width = image_result.GetWidth()
-                height = image_result.GetHeight()
-                print('Grabbed Image %d, width = %d, height = %d' % (i, width, height))
-
-                if device_serial_number:
-                    filename = os.path.join(SAVE_DIR, f'Acquisition-{device_serial_number}-{i}.jpg')
+            try:
+                image_result = cam.GetNextImage(1000)
+                if image_result.IsIncomplete():
+                    print('Image incomplete with image status %d ...' % image_result.GetImageStatus())
                 else:
-                    filename = os.path.join(SAVE_DIR, f'Acquisition-{i}.jpg')
+                    width = image_result.GetWidth()
+                    height = image_result.GetHeight()
+                    print('Grabbed Image %d, width = %d, height = %d' % (i, width, height))
 
-                # Save the image directly
-                image_result.Save(filename)
-                print(f'Image saved at {filename}')
+                    image_converted = processor.Convert(image_result, pixel_format_mono8)
 
-            image_result.Release()
-            print('')
+                    if device_serial_number:
+                        filename = os.path.join(SAVE_DIR, f'Acquisition-{device_serial_number}-{i}.jpg')
+                    else:
+                        filename = os.path.join(SAVE_DIR, f'Acquisition-{i}.jpg')
+
+                    image_converted.Save(filename)
+                    print(f'Image saved at {filename}')
+
+                image_result.Release()
+                print('')
+
+            except PySpin.PySpin.SpinnakerException as ex:
+                print('Error: %s' % ex)
+                return False
 
         cam.EndAcquisition()
 
     except PySpin.PySpin.SpinnakerException as ex:
         print('Error: %s' % ex)
-        try:
-            cam.EndAcquisition()
-        except:
-            pass
         return False
 
     return True
-
-# Standard initialization and cleanup code here
-
 
 if __name__ == "__main__":
     system = PySpin.PySpin.System.GetInstance()
